@@ -42,16 +42,12 @@ def get_arguments():
         parser.print_help()
         parser.exit()
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
     args = get_arguments()
-    port = None
-    if hasattr(args, "port"):
-      port = args.port
-
+    port = args.port if hasattr(args, "port") else None
     manager = TunnelManager(args.host, port)
     if args.action in 'establish':
       credential = args.credential

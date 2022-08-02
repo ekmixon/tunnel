@@ -15,7 +15,7 @@ class TunnelManager:
     self.host = host
     self.port = port
     self.tempdir = "/tmp" # tempfile.gettempdir()
-    self.socket = os.path.join(self.tempdir, '{}.sock'.format(self.host))
+    self.socket = os.path.join(self.tempdir, f'{self.host}.sock')
     if log_level is not None:
       LOGGER.setLevel(log_level)
 
@@ -33,11 +33,11 @@ class TunnelManager:
         self.host
     ]
 
-    private_key = os.path.join(self.tempdir, "{}.pem".format(self.host))
+    private_key = os.path.join(self.tempdir, f"{self.host}.pem")
     if self.__is_key(credential):
       private_key_fd = os.open(private_key, os.O_CREAT | os.O_WRONLY, 0o600)
       with os.fdopen(private_key_fd, 'w') as private_key_file:
-        private_key_file.write("{}\n".format(credential))
+        private_key_file.write(f"{credential}\n")
       ssh_cmd += [ '-i', private_key ]
     else:
       ssh_cmd = [ 'sshpass', '-p', credential ] + ssh_cmd
@@ -45,7 +45,7 @@ class TunnelManager:
     LOGGER.debug(ssh_cmd)
     try:
       subprocess.check_call(ssh_cmd)
-      self.proxy_url = 'socks5://localhost:{}'.format(self.port)
+      self.proxy_url = f'socks5://localhost:{self.port}'
     except subprocess.CalledProcessError:
       LOGGER.fatal('Unable to establish SSH tunnel')
       sys.exit(1)
